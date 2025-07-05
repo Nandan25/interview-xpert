@@ -13,10 +13,13 @@ export const ProfileInfoCard = () => {
     navigate("/");
   };
 
+  console.log(user);
+
   return (
     <div className="flex items-center">
       <div className="w-11 h-11 bg-gray-300 rounded-full mr-3">
-        <FaUser className="text-white text-xl" />{" "}
+        {/* <FaUser className="text-white text-xl" />{" "} */}
+        <img src={user ? user.picture : ""} alt="" />
       </div>
       <div>
         <div className="text-[15px] text-black font-bold leading-3">

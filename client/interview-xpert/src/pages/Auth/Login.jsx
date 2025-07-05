@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Input from "../../components/Inputs/Input";
 // import { validateEmail } from "../../utils/helper";
 import axiosInstance from "../../utils/axiosInstance";
-import { API_PATHS } from "../../utils/apiPaths";
+import { API_BASE_URL, API_PATHS } from "../../utils/apiPaths";
 import { UserContext } from "../../context/userContext";
 
 function Login({ setCurrentPage }) {
@@ -51,9 +51,20 @@ function Login({ setCurrentPage }) {
     }
   };
 
+  const handleGoogleLogin = () => {
+    try {
+      const googleLoginUrl = `${API_BASE_URL}/auth/google`;
+      window.location.href = googleLoginUrl;
+    } catch (error) {
+      console.error("error login with google", error);
+    } finally {
+      // setIsLoading(false);
+    }
+  };
+
   return (
     <>
-      <div className="w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center">
+      {/* <div className="w-[90vw] md:w-[33vw] p-7 flex flex-col justify-center">
         <h3 className="text-lg font-semibold text-black">{"Welcome back"}</h3>
         <p className="text-xs text-slate-700 mt-[5px] mb-6">
           {"Please enter your details to log in"}
@@ -95,6 +106,19 @@ function Login({ setCurrentPage }) {
             </button>
           </p>
         </form>
+      </div> */}
+      <div className="spe-connector-multi">Connect to twitter</div>
+      <div
+        onClick={handleGoogleLogin}
+        style={{ width: "100%" }}
+        className={
+          "cursor-pointer  bg-sky-400 p-3 rounded-lg  font-semibold text-left special-btn "
+        }
+      >
+        <button className="text-white">
+          <i className="fa-brands fa-twitter"></i> &nbsp;
+          {"Connect to twitter"}
+        </button>
       </div>
     </>
   );

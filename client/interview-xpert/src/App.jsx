@@ -5,6 +5,7 @@ import { LandingPage } from "./pages/LandingPage";
 import Dashboard from "./pages/Home/Dashboard";
 import InterviewPrep from "./pages/InterviewPrep/InterviewPrep";
 import { UserProvider } from "./context/userContext";
+import SuccessLogin from "./pages/Auth/SucessLogin";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
               path="/interview-prep/:sessionId"
               element={<InterviewPrep />}
             />
+            <Route path="/success-login" element={<SuccessLogin />} />
           </Routes>
         </Router>
 
