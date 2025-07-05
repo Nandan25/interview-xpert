@@ -27,6 +27,13 @@ const Dashboard = () => {
     try {
       const response = await axiosInstance.get(API_PATHS.SESSION.GET_ALL);
       setSessions(response.data.sessions);
+      // const session = response.data.sessions; // single session object
+
+      // const multipleSessions = Array.from({ length: 20 }, () => ({
+      //   ...session,
+      // }));
+
+      // setSessions(multipleSessions);
     } catch (error) {
       console.error("Error fetching session data:", error);
     }
@@ -56,36 +63,40 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <div className="container mx-auto pt-4 pb-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-7 pt-1 pb-6 px-4 md:px-0">
-          {sessions.length > 0 &&
+      <div className="container mx-auto px-4 pt-6 pb-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sessions.length > 0 ? (
             sessions.map((data, index) => (
-              <>
-                <SummaryCard
-                  key={data?._id}
-                  colors={CARD_BG[index % CARD_BG.length]}
-                  role={data?.role || ""}
-                  focusTopics={data?.focusTopics || ""}
-                  experience={data?.experience || "--"}
-                  questions={data?.questions?.length || "--"}
-                  description={data?.description || ""}
-                  lastUpdated={
-                    data?.updatedAt
-                      ? moment(data.updatedAt).format("Do MMM YYYY")
-                      : ""
-                  }
-                  onSelect={() => navigate(`/interview-prep/${data?._id}`)}
-                  onDelete={() => setOpenDeleteAlert({ open: true, data })}
-                />
-              </>
-            ))}
+              <SummaryCard
+                key={data?._id}
+                colors={CARD_BG[index % CARD_BG.length]}
+                role={data?.role || "Untitled Role"}
+                focusTopics={data?.focusTopics || "No topics"}
+                experience={data?.experience || "--"}
+                questions={data?.questions?.length || "--"}
+                description={data?.description || "No description provided"}
+                lastUpdated={
+                  data?.updatedAt
+                    ? moment(data.updatedAt).format("Do MMM YYYY")
+                    : "Not Updated"
+                }
+                onSelect={() => navigate(`/interview-prep/${data?._id}`)}
+                onDelete={() => setOpenDeleteAlert({ open: true, data })}
+              />
+            ))
+          ) : (
+            <div className="col-span-full text-center text-gray-500 py-12">
+              No interview sessions found. Start by adding a new one.
+            </div>
+          )}
         </div>
 
+        {/* Add New Floating Button */}
         <button
-          className="h-12 md:h-12 flex items-center justify-center gap-3 bg-linear-to-r from-[#FF9324] to-[#e99a4b] text-sm font-semibold text-white px-7 py-2.5 rounded-full hover:bg-black hover:text-white transition-colors cursor-pointer hover:shadow-orange-300 fixed bottom-10 md:bottom-20 right-10 md:right-20"
+          className="h-12 flex items-center justify-center gap-2 bg-gradient-to-r from-[#FF9324] to-[#e99a4b] text-sm font-semibold text-white px-6 py-2.5 rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-200 fixed bottom-8 right-8 z-50"
           onClick={() => setOpenCreateModal(true)}
         >
-          <LuPlus className="text-2xl text-white" />
+          <LuPlus className="text-xl" />
           Add New
         </button>
       </div>

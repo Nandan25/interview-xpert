@@ -14,65 +14,55 @@ const SummaryCard = ({
   return (
     <>
       <div
-        className="bg-white border border-gray-300/40 rounded-xl p-2 overflow-hidden cursor-pointer hover:shadow:xl shadow-gray-100 relative group"
+        className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow relative group cursor-pointer"
         onClick={onSelect}
       >
+        {/* Top Section: Role and Delete */}
         <div
-          className="rounded-lg p-4 cursor-pointer relative"
-          style={{
-            background: colors.bgcolor,
-          }}
+          className="rounded-lg p-4 mb-4"
+          style={{ background: colors.bgcolor }}
         >
-          <div className="flex items-start">
-            <div className="flex-shrink-0 w-12 h-12 bg-white rounded-md flex items-center justify-center mr-4">
-              <span className="text-lg font-semibold text-black">GU</span>
-            </div>
-
-            {/* Content Container */}
-            <div className="flex-grow">
-              <div className="flex justify-between items-start">
-                {/* Title and Skills */}
-                <div>
-                  <h2 className="text-[17px] font-medium">{role}</h2>
-                  <p className="text-xs text-medium text-gray-900">
-                    {focusTopics}
-                  </p>
-                </div>
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-3">
+              {/* <div className="w-11 h-11 rounded-lg bg-white flex items-center justify-center text-lg font-bold text-gray-800 shadow-sm">
+                GU
+              </div> */}
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">{role}</h2>
+                <p className="text-sm text-gray-600">{focusTopics}</p>
               </div>
             </div>
-          </div>
 
-          <button
-            className="hidden group-hover:flex items-center gap-2 text-xs text-rose-500 font-medium bg-rose-50 px-3 py-1 rounded text-nowrap border border-rose-100 hover:border-rose-200 cursor-pointer absolute top-0 right-0"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete();
-            }}
-          >
-            Delete
-          </button>
+            {/* Delete Button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete();
+              }}
+              className="hidden group-hover:flex text-sm text-red-500 font-medium hover:underline"
+            >
+              Delete
+            </button>
+          </div>
         </div>
 
-        <div className="px-3 pb-3">
-          <div className="flex items-center gap-3 mt-4">
-            <div className="text-[10px] font-medium text-black px-3 py-1 border-[0.5px] border-gray-900 rounded full">
-              Experience: {experience} {experience === 1 ? "Year" : "Years"}
-            </div>
-
-            <div className="text-[10px] font-medium text-black px-3 py-1 border-[0.5px] border-gray-900 rounded full">
-              {questions} Q&A
-            </div>
-
-            <div className="text-[10px] font-medium text-black px-3 py-1 border-[0.5px] border-gray-900 rounded full">
-              Last Updated: {lastUpdated}
-            </div>
-          </div>
-
-          {/* Description */}
-          <p className="text-[12px] text-gray-500 font-medium line-clamp-2 mt-3">
-            {description}
-          </p>
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mb-3">
+          <span className="bg-gray-100 text-[12px] text-gray-800 px-3 py-1 rounded-full font-medium">
+            Experience: {experience} {experience === 1 ? "Year" : "Years"}
+          </span>
+          <span className="bg-gray-100 text-[12px] text-gray-800 px-3 py-1 rounded-full font-medium">
+            {questions} Q&A
+          </span>
+          <span className="bg-gray-100 text-[12px] text-gray-800 px-3 py-1 rounded-full font-medium">
+            Updated: {lastUpdated}
+          </span>
         </div>
+
+        {/* Description */}
+        <p className="text-sm text-gray-600 leading-relaxed line-clamp-2">
+          {description}
+        </p>
       </div>
     </>
   );

@@ -15,7 +15,7 @@ const SuccessLogin = () => {
       const token = params.get("access_token");
 
       if (!token) {
-        return navigate("/login");
+        return navigate("/");
       }
       try {
         sessionStorage.setItem("token", token);
@@ -27,7 +27,7 @@ const SuccessLogin = () => {
         navigate("/dashboard");
       } catch (error) {
         console.log("Error fetching user", error);
-        navigate("/login");
+        navigate("/");
       }
     };
     fetchUser();
