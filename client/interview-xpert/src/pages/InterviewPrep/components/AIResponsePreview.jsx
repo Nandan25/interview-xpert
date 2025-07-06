@@ -111,8 +111,8 @@ const CodeBlock = ({ code, language }) => {
     navigator.clipboard.writeText(code);
     setCopied(true);
     setTimeout(() => {
-      setCopied(false), 2000;
-    });
+      setCopied(false);
+    }, 2000);
   };
   return (
     <>

@@ -15,3 +15,7 @@ Thumbs.db
 
 # Optional: VS Code settings
 .vscode/
+
+#Ignore package lock files
+client/interview-xpert/package-lock.json
+server/package-lock.json

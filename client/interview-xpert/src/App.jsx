@@ -5,31 +5,38 @@ import { LandingPage } from "./pages/LandingPage";
 import Dashboard from "./pages/Home/Dashboard";
 import InterviewPrep from "./pages/InterviewPrep/InterviewPrep";
 import { UserProvider } from "./context/userContext";
+import SuccessLogin from "./pages/Auth/SucessLogin";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <>
-      <UserProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route
-              path="/interview-prep/:sessionId"
-              element={<InterviewPrep />}
-            />
-          </Routes>
-        </Router>
+      <QueryClientProvider client={queryClient}>
+        <UserProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route
+                path="/interview-prep/:sessionId"
+                element={<InterviewPrep />}
+              />
+              <Route path="/success-login" element={<SuccessLogin />} />
+            </Routes>
+          </Router>
 
-        <Toaster
-          toastOptions={{
-            className: "",
-            style: {
-              fontSize: "13px",
-            },
-          }}
-        />
-      </UserProvider>
+          <Toaster
+            toastOptions={{
+              className: "",
+              style: {
+                fontSize: "13px",
+              },
+            }}
+          />
+        </UserProvider>
+      </QueryClientProvider>
     </>
   );
 }

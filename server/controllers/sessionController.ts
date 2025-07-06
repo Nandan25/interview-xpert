@@ -93,7 +93,7 @@ export const createSession = async (req: any, res: any) => {
     try {
         const { role, experience, focusTopics, description = "", numberOfQuestions = 20 } = req.body;
         const userId = req.user._id;
-        console.log(req.body)
+
         // Validate input
         if (!role || !experience || !focusTopics) {
             return res.status(400).json({ message: "Missing required fields", success: false });

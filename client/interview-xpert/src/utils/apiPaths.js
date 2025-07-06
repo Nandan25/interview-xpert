@@ -1,10 +1,16 @@
 export const API_BASE_URL = `${import.meta.env.VITE_BASE_URL}/api`;
 
 export const API_PATHS = {
+    PROFILE: {
+        GetUserProfile: `/profile/profile`,
+        LOGIN: `${API_BASE_URL}/auth/google`,
+        REGISTER: `/profile/register`,
+
+    },
     AUTH: {
-        GetUserProfile: `/auth/profile`,
-        LOGIN: `/auth/login`,
-        REGISTER: `/auth/register`,
+        GetUserProfile: `/profile/profile`,
+        LOGIN: `/profile/login`,
+        REGISTER: `/profile/register`,
 
     },
     SESSION: {

@@ -20,7 +20,7 @@ export const registerUser = async (req: any, res: any) => {
             password: passwordHash,
         });
 
-        console.log(user);
+
         res.status(200).json({
             _id: user._id,
             name: user.name,

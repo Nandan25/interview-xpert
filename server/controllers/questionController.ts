@@ -52,7 +52,7 @@ export const addQuestionToSession = async (req: any, res: any) => {
         if (!session) {
             return res.status(404).json({ message: "Session not found" })
         }
-        console.log(questions)
+
         const questionDocs = await Promise.all(
             questions.map(async (q: any) => {
                 const question = await Question.create({

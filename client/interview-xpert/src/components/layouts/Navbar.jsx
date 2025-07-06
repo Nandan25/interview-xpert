@@ -4,16 +4,13 @@ import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <div className="h-16 bg-white border border-b border-gray-200/50 backdrop-blur-[2px] py-2.5 px-4 md:px-0 sticky top-0 z-30">
-      <div className="container mx-auto flex items-center justify-between gap-5">
-        <Link to="/dashboard">
-          <h2 className="text-lg md:text-xl font-medium text-black leading-5">
-            Interview Xpert
-          </h2>
-        </Link>
-
+    <div className="container mx-auto px-6 md:px-12 pt-6 relative z-10">
+      <header className="flex justify-between items-center px-6 py-4 shadow-sm bg-gradient-to-r from-[#fff9f0] to-white rounded-md w-full">
+        <div className="text-2xl font-semibold text-gray-900 tracking-wide">
+          Interview<span className="text-orange-500">Xpert</span>
+        </div>
         <ProfileInfoCard />
-      </div>
+      </header>
     </div>
   );
 };
