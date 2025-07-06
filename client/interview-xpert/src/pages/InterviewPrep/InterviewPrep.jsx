@@ -26,6 +26,7 @@ const InterviewPrep = () => {
       const response = await axiosInstance.get(
         `${API_PATHS.SESSION.GET_ONE}${sessionId}`
       );
+
       return response.data.session;
     },
     enabled: !!sessionId, // only fetch if sessionId exists
@@ -87,7 +88,7 @@ const InterviewPrep = () => {
       );
 
       if (response.data?.question) {
-        toast.success("Question pinned successfully");
+        // toast.success("Question pinned successfully");
 
         // Update the cached session data manually
         queryClient.setQueryData(["session", sessionId], (oldData) => {
@@ -100,7 +101,7 @@ const InterviewPrep = () => {
 
           // Move pinned questions to the top
           updatedQuestions.sort(
-            (a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0)
+            (a, b) => (b.isPinned ? true : false) - (a.isPinned ? true : false)
           );
 
           return {
