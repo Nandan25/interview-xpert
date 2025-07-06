@@ -114,15 +114,17 @@ const Dashboard = () => {
       </Modal>
       <Modal
         isOpen={openDeleteAlert?.open}
-        onClose={() => {
-          setOpenDeleteAlert({ open: false, data: null });
-        }}
-        title="Delete alert"
+        onClose={() => setOpenDeleteAlert({ open: false, data: null })}
+        title="Delete Session"
       >
-        <div className="w-[30vw]">
+        <div className="w-full md:w-[30vw]">
           <DeleteAlertContent
-            content="Are you sure you want to delete this session detail?"
-            onDelete={() => deleteSession(openDeleteAlert.data)}
+            content="Are you sure you want to delete this session?"
+            onDelete={() => {
+              deleteSession(openDeleteAlert.data);
+              setOpenDeleteAlert({ open: false, data: null });
+            }}
+            onCancel={() => setOpenDeleteAlert({ open: false, data: null })}
           />
         </div>
       </Modal>

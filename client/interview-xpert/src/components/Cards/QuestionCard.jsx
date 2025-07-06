@@ -62,7 +62,7 @@ const QuestionCard = ({
           <button
             className="text-gray-400 hover:text-gray-500 cursor-pointer"
             onClick={(e) => {
-              e.stopPropagation(); // Prevent parent onClick from firing
+              e.stopPropagation();
               toggleExpand();
             }}
           >

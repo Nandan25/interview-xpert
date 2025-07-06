@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import moment from "moment";
 import { AnimatePresence, motion } from "framer-motion";
-import { LuCircleAlert, LuListCollapse } from "react-icons/lu";
+import { LuCircleAlert, LuArrowLeft } from "react-icons/lu";
 import SpinnerLoader from "../../components/Loader/SpinnerLoader";
 import { toast } from "react-hot-toast";
 import DashboardLayout from "../../components/layouts/DashboardLayout";
@@ -12,61 +12,70 @@ import { API_PATHS } from "../../utils/apiPaths";
 import QuestionCard from "../../components/Cards/QuestionCard";
 import Drawer from "../../components/Drawer";
 import SkeletonLoader from "../../components/Loader/SkeletonLoader";
-import axios from "axios";
 import AIResponsePreview from "./components/AIResponsePreview";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const InterviewPrep = () => {
   const { sessionId } = useParams();
 
-  const [sessionData, setSessionData] = useState(null);
+  const queryClient = useQueryClient();
+
+  const { data: sessionData } = useQuery({
+    queryKey: ["session", sessionId],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `${API_PATHS.SESSION.GET_ONE}${sessionId}`
+      );
+      return response.data.session;
+    },
+    enabled: !!sessionId, // only fetch if sessionId exists
+    staleTime: 1000 * 60 * 10, // 10 minutes cache
+  });
+
+  const navigate = useNavigate();
+
+  // const [sessionData, setSessionData] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
 
   const [openLeanMoreDrawer, setOpenLeanMoreDrawer] = useState(false);
   const [explanation, setExplanation] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isUpdateLoader, setIsUpdateLoader] = useState(false);
 
-  // Fetch session data by session id
-  const fetchSessionDetailsById = async () => {
-    try {
-      const response = await axiosInstance.get(
-        `${API_PATHS.SESSION.GET_ONE}${sessionId}`
-      );
-      if (response.data && response.data.session) {
-        setSessionData(response.data.session);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  // Generate Concept Explanation
   const generateConceptExplanation = async (question) => {
     try {
-      setErrorMsg(""); // Clear any previous error messages
-      setIsLoading(true); // Set loading state to true
-      setOpenLeanMoreDrawer(true); // Open the drawer
+      setErrorMsg("");
+      setIsLoading(true);
+      setOpenLeanMoreDrawer(true);
 
       const response = await axiosInstance.post(
-        API_PATHS.AI.Generate_Explanation, // API endpoint for generating explanation
+        API_PATHS.AI.Generate_Explanation,
         {
-          question, // Pass the question as payload
+          question,
         }
       );
-      console.log(response);
 
-      // If response.data exists, set the explanation
-      if (response.data && response.data.data) {
+      if (response.data?.data) {
         setExplanation(response.data.data);
+        queryClient.setQueryData(["explanation", question], response.data.data); // cache it
       }
     } catch (error) {
-      // Handle error
       setExplanation(null);
       console.error("Error generating concept explanation:", error);
       setErrorMsg("Failed to generate explanation. Please try again.");
     } finally {
-      setIsLoading(false); // Set loading state to false regardless of success or failure
+      setIsLoading(false);
+    }
+  };
+
+  const handleLearnMore = (question) => {
+    const cached = queryClient.getQueryData(["explanation", question]);
+
+    if (cached) {
+      setExplanation(cached);
+      setOpenLeanMoreDrawer(true);
+    } else {
+      generateConceptExplanation(question);
     }
   };
 
@@ -77,91 +86,123 @@ const InterviewPrep = () => {
         `${API_PATHS.QUESTION.PIN}${questionId}`
       );
 
-      console.log(response);
+      if (response.data?.question) {
+        toast.success("Question pinned successfully");
 
-      if (response.data && response.data.question) {
-        toast.success(`Question pinned succesfully`);
-        fetchSessionDetailsById();
+        // Update the cached session data manually
+        queryClient.setQueryData(["session", sessionId], (oldData) => {
+          if (!oldData) return;
+
+          // Toggle the pin status for the question
+          const updatedQuestions = oldData.questions.map((q) =>
+            q._id === questionId ? { ...q, isPinned: !q.isPinned } : q
+          );
+
+          // Move pinned questions to the top
+          updatedQuestions.sort(
+            (a, b) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0)
+          );
+
+          return {
+            ...oldData,
+            questions: updatedQuestions,
+          };
+        });
+      } else {
+        toast.error("Failed to pin the question.");
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error pinning question:", error);
+      toast.error("Error occurred while pinning.");
     }
   };
 
   // Add more questions to a session
   const uploadMoreQuestions = async () => {};
 
-  useEffect(() => {
-    fetchSessionDetailsById();
-  }, [sessionId]);
+  // useEffect(() => {
+  //   fetchSessionDetailsById();
+  // }, [sessionId]);
 
   return (
     <DashboardLayout>
-      <RoleInfoHeader
-        role={sessionData?.role || ""}
-        topicsToFocus={sessionData?.topicsToFocus || ""}
-        experience={sessionData?.experience || "-"}
-        questions={sessionData?.questions?.length || "-"}
-        description={sessionData?.description || ""}
-        lastUpdated={
-          sessionData?.updatedAt
-            ? moment(sessionData.updatedAt).format("Do MMM YYYY")
-            : ""
-        }
-      />
-      <div className="mx-auto mt-8 px-4">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
-          Interview Q & A
+      {/* Role Info Card with Back Button */}
+      <div className="max-w-6xl mx-auto px-4 pt-6">
+        <div className="bg-white shadow-lg rounded-xl p-6 border border-gray-200">
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="flex items-center gap-2 text-sm text-orange-600 font-semibold mb-4 hover:underline"
+          >
+            <LuArrowLeft className="text-lg" />
+            Back to Dashboard
+          </button>
+
+          <RoleInfoHeader
+            role={sessionData?.role || ""}
+            focusTopics={sessionData?.focusTopics || ""}
+            experience={sessionData?.experience || "-"}
+            questions={sessionData?.questions?.length || "-"}
+            description={sessionData?.description || ""}
+            lastUpdated={
+              sessionData?.updatedAt
+                ? moment(sessionData.updatedAt).format("Do MMM YYYY")
+                : ""
+            }
+          />
+        </div>
+      </div>
+
+      {/* Questions */}
+      <div className="max-w-6xl mx-auto mt-10 px-4 md:px-6">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+          Interview Q&A
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <div className="flex flex-col gap-6">
           <AnimatePresence>
-            {sessionData &&
-              sessionData.questions.map((data, index) => (
-                <motion.div
-                  key={data._id || data.id} // Use data.id if _id is not available
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{
-                    type: "spring",
-                    duration: 0.4,
-                    delay: index * 0.1,
-                    damping: 15,
-                  }}
-                  layoutId={`question-${data._id || data.id}`} // This is the key prop that animates position changes
-                >
-                  <QuestionCard
-                    question={data?.question}
-                    answer={data?.answer}
-                    onLearnMore={() =>
-                      generateConceptExplanation(data.question)
-                    }
-                    isPinned={data?.isPinned}
-                    onTogglePin={() =>
-                      toggleQuestionPinStatus(data._id || data.id)
-                    }
-                  />
-                </motion.div>
-              ))}
+            {sessionData?.questions?.map((data, index) => (
+              <motion.div
+                key={data._id || data.id}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{
+                  type: "spring",
+                  duration: 0.5,
+                  delay: index * 0.05,
+                  damping: 18,
+                }}
+              >
+                <QuestionCard
+                  question={data?.question}
+                  answer={data?.answer}
+                  isPinned={data?.isPinned}
+                  onLearnMore={() => handleLearnMore(data.question)}
+                  onTogglePin={() =>
+                    toggleQuestionPinStatus(data._id || data.id)
+                  }
+                />
+              </motion.div>
+            ))}
           </AnimatePresence>
         </div>
-        <div>
-          <Drawer
-            isOpen={openLeanMoreDrawer}
-            onClose={() => setOpenLeanMoreDrawer(false)}
-            title={!isLoading && explanation?.title}
-          >
-            {errorMsg && (
-              <p className="flex gap-2 text-sm text-amber-600 font-medium mt-1">
-                <LuCircleAlert className="mt-1" /> {errorMsg}
-              </p>
-            )}
-            {isLoading && <SkeletonLoader />}
-            {!isLoading && explanation && (
-              <AIResponsePreview content={explanation?.explanation} />
-            )}
-          </Drawer>
-        </div>
+
+        {/* Drawer for Learn More */}
+        <Drawer
+          isOpen={openLeanMoreDrawer}
+          onClose={() => setOpenLeanMoreDrawer(false)}
+          title={!isLoading && explanation?.title}
+        >
+          {errorMsg && (
+            <p className="flex gap-2 text-sm text-amber-600 font-medium mt-1">
+              <LuCircleAlert className="mt-1" /> {errorMsg}
+            </p>
+          )}
+          {isLoading && <SkeletonLoader />}
+          {!isLoading && explanation && (
+            <AIResponsePreview content={explanation?.explanation} />
+          )}
+        </Drawer>
       </div>
     </DashboardLayout>
   );

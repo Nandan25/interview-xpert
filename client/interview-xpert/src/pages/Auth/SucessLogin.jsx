@@ -23,7 +23,6 @@ const SuccessLogin = () => {
           `${API_PATHS.PROFILE.GetUserProfile}`
         );
         updateUser({ token: token, ...res.data });
-        console.log(res);
         navigate("/dashboard");
       } catch (error) {
         console.log("Error fetching user", error);

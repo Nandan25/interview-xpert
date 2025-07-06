@@ -13,9 +13,9 @@ export const APP_FEATURES = [
     },
     {
         id: "03",
-        title: "Take Notes & Pin What Matters",
+        title: "Pin What Matters",
         description:
-            "Add personal notes to any question, pin important ones to the top, and build your own learning stack.",
+            "Pin important ones to the top, and build your own learning stack.",
     },
     {
         id: "04",
