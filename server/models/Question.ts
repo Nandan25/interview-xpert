@@ -7,6 +7,10 @@ const QuestionSchema = new mongoose.Schema({
     answer: { type: String, },
     note: { type: String, },
     isPinned: { type: Boolean, default: false },
+    explanation: {
+        title: String,
+        content: String
+    },
 
 }, { timestamps: true });
 

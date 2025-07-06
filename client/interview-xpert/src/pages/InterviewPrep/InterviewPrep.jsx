@@ -43,7 +43,7 @@ const InterviewPrep = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const generateConceptExplanation = async (question) => {
+  const generateConceptExplanation = async (id) => {
     try {
       setErrorMsg("");
       setIsLoading(true);
@@ -51,14 +51,12 @@ const InterviewPrep = () => {
 
       const response = await axiosInstance.post(
         API_PATHS.AI.Generate_Explanation,
-        {
-          question,
-        }
+        { id }
       );
 
-      if (response.data?.data) {
-        setExplanation(response.data.data);
-        queryClient.setQueryData(["explanation", question], response.data.data); // cache it
+      if (response.data) {
+        setExplanation(response.data);
+        queryClient.setQueryData(["explanation", id], response.data); // cache it
       }
     } catch (error) {
       setExplanation(null);
@@ -69,14 +67,14 @@ const InterviewPrep = () => {
     }
   };
 
-  const handleLearnMore = (question) => {
-    const cached = queryClient.getQueryData(["explanation", question]);
+  const handleLearnMore = (id) => {
+    const cached = queryClient.getQueryData(["explanation", id]);
 
     if (cached) {
       setExplanation(cached);
       setOpenLeanMoreDrawer(true);
     } else {
-      generateConceptExplanation(question);
+      generateConceptExplanation(id);
     }
   };
 
@@ -117,13 +115,6 @@ const InterviewPrep = () => {
       toast.error("Error occurred while pinning.");
     }
   };
-
-  // Add more questions to a session
-  const uploadMoreQuestions = async () => {};
-
-  // useEffect(() => {
-  //   fetchSessionDetailsById();
-  // }, [sessionId]);
 
   return (
     <DashboardLayout>
@@ -178,7 +169,7 @@ const InterviewPrep = () => {
                   question={data?.question}
                   answer={data?.answer}
                   isPinned={data?.isPinned}
-                  onLearnMore={() => handleLearnMore(data.question)}
+                  onLearnMore={() => handleLearnMore(data._id, data.question)}
                   onTogglePin={() =>
                     toggleQuestionPinStatus(data._id || data.id)
                   }

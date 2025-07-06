@@ -12,7 +12,7 @@ passport.use(
         },
         async function (accessToken: any, refreshToken: any, profile: any, done: any) {
             try {
-                console.log(profile)
+
                 const user = await User.findOneAndUpdate({ googleId: profile.id }, {
                     name: profile.displayName,
                     email: profile.emails[0].value,

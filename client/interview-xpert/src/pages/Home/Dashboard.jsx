@@ -41,12 +41,10 @@ const Dashboard = () => {
 
   const deleteSession = async (data) => {
     try {
-      console.log(data);
       const response = await axiosInstance.delete(
         `${API_PATHS.SESSION.DELETE}${data._id}`
       );
 
-      console.log(response);
       if (response.status === 200) {
         toast.success("Session deleted successfully");
         fetchAllSessions();
