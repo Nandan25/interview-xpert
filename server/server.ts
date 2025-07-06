@@ -30,6 +30,10 @@ app.use("/api/ai/generate-explanation", protect, generateConceptExplanation);
 
 app.use(passport.initialize());
 
+app.get('/ping', (req, res) => {
+    res.send('OK');
+});
+
 
 const PORT = process.env.PORT || 5000;
 
