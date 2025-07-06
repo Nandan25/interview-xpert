@@ -24,6 +24,10 @@ app.use("/api/questions", protect, questionRoutes);
 app.use("/api/ai/generate-questions", protect, generateInterviewQuestions);
 app.use("/api/ai/generate-explanation", protect, generateConceptExplanation);
 
+app.get('/ping', (req, res) => {
+    res.send('OK');
+});
+
 
 const PORT = process.env.PORT || 5000;
 
