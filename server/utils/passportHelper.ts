@@ -2,13 +2,14 @@ import passport from "passport"
 import { User } from "../models/User";
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
+const API_BASE_URL = process.env.API_BASE_URL;
 
 passport.use(
     new GoogleStrategy(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: "http://localhost:8000/api/auth/google/callback"
+            callbackURL: `${API_BASE_URL}/api/auth/google/callback`
         },
         async function (accessToken: any, refreshToken: any, profile: any, done: any) {
             try {
