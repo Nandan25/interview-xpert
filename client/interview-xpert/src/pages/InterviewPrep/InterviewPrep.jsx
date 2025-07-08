@@ -120,12 +120,11 @@ const InterviewPrep = () => {
       const response = await axiosInstance.post(
         `${API_PATHS.QUESTION.GENERATE_MORE_QUESTIONS}${sessionId}`
       );
-      console.log(response);
       return response.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["session", sessionId]);
-      setVisibleCount((prev) => prev + 10);
+      setVisibleCount((prev) => prev + 3);
     },
     onError: (error) => {
       console.error("Error generating more questions:", error);
@@ -138,13 +137,13 @@ const InterviewPrep = () => {
       {!isPending ? (
         <>
           {/* Role Info Card with Back Button */}
-          <div className="max-w-6xl mx-auto px-4 pt-6">
-            <div className="bg-white shadow-lg rounded-xl p-6 border border-gray-200">
+          <div className="max-w-3xl mx-auto px-4 pt-4">
+            <div className="bg-white shadow-md rounded-lg p-4 border border-gray-200">
               <button
                 onClick={() => navigate("/dashboard")}
-                className="flex items-center gap-2 text-sm text-orange-600 font-semibold mb-4 hover:underline cursor-pointer"
+                className="flex items-center gap-2 text-sm text-orange-600 font-semibold mb-3 hover:underline cursor-pointer"
               >
-                <LuArrowLeft className="text-lg" />
+                <LuArrowLeft className="text-base" />
                 Back to Dashboard
               </button>
 
@@ -163,9 +162,9 @@ const InterviewPrep = () => {
             </div>
           </div>
 
-          {/* Questions */}
-          <div className="max-w-6xl mx-auto mt-10 px-4 md:px-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-6">
+          {/* Questions Section */}
+          <div className="max-w-7xl mx-auto mt-12 px-4 md:px-6">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8">
               Interview Q&A
             </h2>
 
@@ -199,9 +198,10 @@ const InterviewPrep = () => {
                       />
                     </motion.div>
                   ))}
-              </AnimatePresence>{" "}
+              </AnimatePresence>
+
               {/* Load More Button */}
-              <div className="flex justify-center mt-6">
+              <div className="flex justify-center mt-8">
                 <button
                   onClick={() => {
                     const currentLength = sessionData?.questions?.length || 0;
@@ -211,7 +211,7 @@ const InterviewPrep = () => {
                       generateMoreQuestionsMutation.mutate();
                     }
                   }}
-                  className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-6 rounded-lg shadow-sm transition duration-200 disabled:opacity-50"
+                  className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2.5 px-7 rounded-lg shadow transition duration-200 disabled:opacity-50"
                   disabled={generateMoreQuestionsMutation.isPending}
                 >
                   {generateMoreQuestionsMutation.isPending ? (
@@ -226,7 +226,7 @@ const InterviewPrep = () => {
               </div>
             </div>
 
-            {/* Drawer for Learn More */}
+            {/* Learn More Drawer */}
             <Drawer
               isOpen={openLeanMoreDrawer}
               onClose={() => setOpenLeanMoreDrawer(false)}
