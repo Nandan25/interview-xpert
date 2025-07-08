@@ -1,9 +1,12 @@
 import { Question } from "../models/Question";
 import { Session } from "../models/Session";
+import { AppLogger } from "../utils/logger";
 
 
 export const togglePinQuestion = async (req: any, res: any) => {
     try {
+        AppLogger.info("Entering Toggle Pin question controller");
+
         const question = await Question.findById(req.params.id);
 
         if (!question) {
@@ -18,11 +21,16 @@ export const togglePinQuestion = async (req: any, res: any) => {
             success: true, question
         });
 
-    } catch (error: any) { console.log(error.message); return res.status(500).json({ message: "Server error", success: false }); }
+    } catch (error: any) {
+        AppLogger.error(`Error in Toggle Pin question controller:${error.message}`);
+        console.log(error.message); return res.status(500).json({ message: "Server error", success: false });
+    }
 };
 
 export const updateQuestionNote = async (req: any, res: any) => {
     try {
+        AppLogger.info("Entering Update question note controller");
+
         const { note } = req.body;
         const question = await Question.findById(req.params.id);
 
@@ -36,11 +44,16 @@ export const updateQuestionNote = async (req: any, res: any) => {
         res.status(200).json({ success: true, question });
 
     }
-    catch (error: any) { console.log(error.message); return res.status(500).json({ message: "Server error", success: false }); }
+    catch (error: any) {
+        AppLogger.error(`Error in Update question note controller:${error.message}`);
+        console.log(error.message); return res.status(500).json({ message: "Server error", success: false });
+    }
 };
 
 export const addQuestionToSession = async (req: any, res: any) => {
     try {
+        AppLogger.info("Entering Add question to session controller");
+
         const { sessionId, questions } = req.body;
 
         if (!sessionId || !questions || !Array.isArray(questions)) {
@@ -72,7 +85,10 @@ export const addQuestionToSession = async (req: any, res: any) => {
         });
 
     }
-    catch (error: any) { console.log(error.message); return res.status(500).json({ message: "Server error", success: false }); }
+    catch (error: any) {
+        AppLogger.error(`Error in Add question to session controller:${error.message}`);
+        console.log(error.message); return res.status(500).json({ message: "Server error", success: false });
+    }
 };
 
 

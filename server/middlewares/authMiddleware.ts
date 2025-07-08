@@ -1,11 +1,14 @@
 import jwt from "jsonwebtoken";
 import { User } from "../models/User";
 import { error } from "console";
+import { AppLogger } from "../utils/logger";
 
 // Middleware to protect routes
 
 export const protect = async (req: any, res: any, next: any) => {
     try {
+        AppLogger.info(`Entering in protect middleware`);
+
         let token = req.headers.authorization;
 
         const secret = process.env.JWT_SECRET ?? 'test-secret';
@@ -22,6 +25,7 @@ export const protect = async (req: any, res: any, next: any) => {
 
     } catch (e: any) {
         console.log(e);
+        AppLogger.error(`Error in protect middleware:${e.message}`);
         res.status(401).json({ message: "Token failed", error: e.message })
     }
 }

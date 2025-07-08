@@ -1,9 +1,11 @@
 import { User } from "../models/User";
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken";
+import { AppLogger } from "../utils/logger";
 
 export const registerUser = async (req: any, res: any) => {
     try {
+        AppLogger.info("Entering Register user controller");
 
         const { name, email, password } = req.body;
 
@@ -27,37 +29,17 @@ export const registerUser = async (req: any, res: any) => {
             email: user.email,
             token: generateToken(user._id)
         });
-    } catch (error: any) { console.log(error.message); return res.status(400).json({ message: "Server error", error: error.message }); }
+    } catch (error: any) {
+        AppLogger.error(`Error in Register user controller:${error.message}`);
+        console.log(error.message); return res.status(400).json({ message: "Server error", error: error.message });
+    }
 };
 
-export const loginUser = async (req: any, res: any) => {
-    try {
-        const { email, password } = req.body;
-        const user = await User.findOne({
-            email
-        });
-        if (user) {
-            bcrypt.compare(password, user.password).then((resp) => {
-                res.status(200).json({
-                    token: generateToken(user._id),
-                    _id: user._id,
-                    name: user.name,
-                    email: user.email,
-                });
-            }).catch((e: any) => {
-                console.log(e);
-                res.status(500).json({ message: "Invalid email or password" })
-            })
-        }
-        else {
-            res.status(500).json({ message: "Invalid email or password" })
-        }
-    }
-    catch (error: any) { console.log(error.message); return res.status(400).json({ message: "Server error", error: error.message }); }
-};
+
 
 export const getUserProfile = async (req: any, res: any) => {
     try {
+        AppLogger.info("Entering Get user profile controller");
 
         const user = await User.findById(
             req.user.id
@@ -68,6 +50,7 @@ export const getUserProfile = async (req: any, res: any) => {
         res.json(user);
     }
     catch (error: any) {
+        AppLogger.error(`Error in Get user profile controller:${error.message}`);
         console.log(error.message); return res.status(400).json({ message: "Server error", error: error.message });
     }
 };

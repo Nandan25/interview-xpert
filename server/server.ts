@@ -11,11 +11,15 @@ import { protect } from './middlewares/authMiddleware';
 import { generateConceptExplanation, generateInterviewQuestions } from './controllers/aiController';
 require("./utils/passportHelper");
 import passport from "passport"
+import { AppLogger } from "./utils/logger";
+
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+
+AppLogger.init(process.env.LOG_LEVEL || "info");
 
 connect();
 
@@ -37,4 +41,7 @@ app.get('/ping', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => { console.log(`Server running on port ${PORT}`) })
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    AppLogger.info("Server started successfully.");
+})

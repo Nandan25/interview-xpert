@@ -1,43 +1,13 @@
 import { Question } from "../models/Question";
 import { Session } from "../models/Session";
 import { generateAIResponse } from "../utils/aiHelper";
+import { AppLogger } from "../utils/logger";
 import { questionAnswerPrompt } from "../utils/prompts";
-
-// export const createSession = async (req: any, res: any) => {
-//     try {
-
-//         const { role, experience, focusTopics, description, questions } = req.body;
-
-//         const userId = req.user._id;
-
-//         const session: any = await Session.create({
-//             user: userId,
-//             role, experience, focusTopics, description
-//         });
-//         if (questions.length > 0) {
-//             const questionDocs = await Promise.all(
-//                 questions.map(async (q: any) => {
-//                     const question = await Question.create({
-//                         session: session._id,
-//                         question: q.question,
-//                         answer: q.answer
-//                     });
-//                     return question._id;
-//                 })
-//             )
-//             console.log(questionDocs)
-//             session.questions = questionDocs;
-//         }
-//         await session.save();
-
-//         res.status(201).json({
-//             success: true, session
-//         });
-//     } catch (error: any) { console.log(error.message); return res.status(500).json({ message: "Server error", success: false }); }
-// };
 
 export const getMySessions = async (req: any, res: any) => {
     try {
+        AppLogger.info("Entering Get user sessions controller");
+
         const userId = req.user.id;
         const sessions = await Session.find(
             { user: userId }
@@ -48,11 +18,16 @@ export const getMySessions = async (req: any, res: any) => {
         res.status(200).json({ success: true, sessions });
 
     }
-    catch (error: any) { console.log(error.message); return res.status(500).json({ message: "Server error", success: false }); }
+    catch (error: any) {
+        AppLogger.error(`Error in Get user sessions controller:${error.message}`);
+        console.log(error.message); return res.status(500).json({ message: "Server error", success: false });
+    }
 };
 
 export const getSessionById = async (req: any, res: any) => {
     try {
+        AppLogger.info("Entering Get session by id controller");
+
         const sessionId = req.params.id;
         const session = await Session.findById(
             sessionId
@@ -63,11 +38,16 @@ export const getSessionById = async (req: any, res: any) => {
         res.status(200).json({ success: true, session });
 
     }
-    catch (error: any) { console.log(error.message); return res.status(500).json({ message: "Server error", success: false }); }
+    catch (error: any) {
+        AppLogger.error(`Error in Get session by id controller:${error.message}`);
+        console.log(error.message); return res.status(500).json({ message: "Server error", success: false });
+    }
 };
 
 export const deleteSession = async (req: any, res: any) => {
     try {
+        AppLogger.info("Entering Delete session controller");
+
         const sessionId = req.params.id;
         const session = await Session.findById(sessionId)
         if (session?.user?.toString() !== req.user.id) {
@@ -86,11 +66,16 @@ export const deleteSession = async (req: any, res: any) => {
         res.status(200).json({ success: true, message: "Session deleted successfully" });
 
     }
-    catch (error: any) { console.log(error.message); return res.status(500).json({ message: "Server error", success: false }); }
+    catch (error: any) {
+        AppLogger.error(`Error in Delete session controller:${error.message}`);
+        console.log(error.message); return res.status(500).json({ message: "Server error", success: false });
+    }
 };
 
 export const createSession = async (req: any, res: any) => {
     try {
+        AppLogger.info("Entering Create session controller");
+
         const { role, experience, focusTopics, description = "", numberOfQuestions = 20 } = req.body;
         const userId = req.user._id;
 
@@ -136,7 +121,7 @@ export const createSession = async (req: any, res: any) => {
 
         res.status(201).json({ success: true, session });
     } catch (error: any) {
-        console.error("Create Session Error:", error.message);
+        AppLogger.error(`Error in Create session controller:${error.message}`);
         return res.status(500).json({ message: "Server error", success: false });
     }
 };

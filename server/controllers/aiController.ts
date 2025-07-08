@@ -1,11 +1,12 @@
 import { Question } from "../models/Question";
 import { generateAIResponse } from "../utils/aiHelper";
+import { AppLogger } from "../utils/logger";
 import { conceptExplanationPrompt, questionAnswerPrompt } from "../utils/prompts";
 
 
 export const generateInterviewQuestions = async (req: any, res: any) => {
     try {
-
+        AppLogger.info("Entering Generate Interview questions controller");
         const { role, experience, focusTopics, description = "", numberOfQuestions } = req.body;
 
         if (!role || !experience || !focusTopics || !numberOfQuestions) {
@@ -19,6 +20,8 @@ export const generateInterviewQuestions = async (req: any, res: any) => {
         res.status(200).json({ data })
 
     } catch (error: any) {
+        AppLogger.error(`Error in Generate Interview questions controller:${error.message}`);
+
         res.status(500).json({ message: "Failed to generate questions", error: error.message })
     }
 
@@ -26,6 +29,8 @@ export const generateInterviewQuestions = async (req: any, res: any) => {
 
 export const generateConceptExplanation = async (req: any, res: any) => {
     try {
+        AppLogger.info("Entering Generate concept explanation controller");
+
         const { id } = req.body;
 
         if (!id) {
@@ -61,6 +66,8 @@ export const generateConceptExplanation = async (req: any, res: any) => {
         res.status(200).json({ title, explanation: content });
 
     } catch (error: any) {
+        AppLogger.error(`Error in  Generate concept explanation controller:${error.message}`);
+
         res.status(500).json({
             message: "Failed to generate concept explanation",
             error: error.message

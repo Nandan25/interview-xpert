@@ -1,9 +1,11 @@
 import { GoogleGenAI } from "@google/genai";
+import { AppLogger } from "./logger";
 
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 export const generateAIResponse = async (prompt: any): Promise<string> => {
+    AppLogger.info("Entering Generate AI Response controller");
     return ai.models.generateContent({
         model: "gemini-2.5-flash",
         contents: prompt
