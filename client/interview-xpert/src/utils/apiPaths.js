@@ -22,7 +22,7 @@ export const API_PATHS = {
     QUESTION: {
         PIN: `/questions/pin/`,
         ADD_NOTE: `/questions/note/`,
-        ADD_QUESTION: `/questions/add`,
+        GENERATE_MORE_QUESTIONS: `/questions/generate-more/`,
     }
     , AI: {
         Generate_Questions: `/ai/generate-questions`,

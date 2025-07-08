@@ -13,7 +13,7 @@ export const generateInterviewQuestions = async (req: any, res: any) => {
             return res.status(400).json({ message: "Missing required fields" })
         }
 
-        const prompt: any = questionAnswerPrompt(role, experience, focusTopics, description, numberOfQuestions);
+        const prompt: any = questionAnswerPrompt(role, experience, focusTopics, numberOfQuestions);
 
         const data = await generateAIResponse(prompt);
 

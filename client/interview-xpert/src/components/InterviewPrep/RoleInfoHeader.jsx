@@ -1,6 +1,12 @@
 import React from "react";
 
-const RoleInfoHeader = ({ role, focusTopics, experience, lastUpdated }) => {
+const RoleInfoHeader = ({
+  role,
+  focusTopics,
+  experience,
+  questions,
+  lastUpdated,
+}) => {
   return (
     <div className="relative bg-white px-6 md:px-10 py-10 overflow-hidden rounded-xl shadow-sm">
       {/* Animated blobs background */}
@@ -24,9 +30,9 @@ const RoleInfoHeader = ({ role, focusTopics, experience, lastUpdated }) => {
           <span className="text-xs font-medium text-white bg-gray-900 px-4 py-1.5 rounded-full">
             Experience: {experience} {experience == 1 ? "Year" : "Years"}
           </span>
-          {/* <span className="text-xs font-medium text-white bg-gray-900 px-4 py-1.5 rounded-full">
+          <span className="text-xs font-medium text-white bg-gray-900 px-4 py-1.5 rounded-full">
             {questions} Q&A
-          </span> */}
+          </span>
           <span className="text-xs font-medium text-white bg-gray-900 px-4 py-1.5 rounded-full">
             Last Updated: {lastUpdated}
           </span>

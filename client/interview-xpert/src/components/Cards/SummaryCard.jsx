@@ -51,9 +51,9 @@ const SummaryCard = ({
           <span className="bg-gray-100 text-[12px] text-gray-800 px-3 py-1 rounded-full font-medium">
             Experience: {experience} {experience === 1 ? "Year" : "Years"}
           </span>
-          {/* <span className="bg-gray-100 text-[12px] text-gray-800 px-3 py-1 rounded-full font-medium">
+          <span className="bg-gray-100 text-[12px] text-gray-800 px-3 py-1 rounded-full font-medium">
             {questions} Q&A
-          </span> */}
+          </span>
           <span className="bg-gray-100 text-[12px] text-gray-800 px-3 py-1 rounded-full font-medium">
             Updated: {lastUpdated}
           </span>

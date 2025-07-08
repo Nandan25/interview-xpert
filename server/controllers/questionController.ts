@@ -1,6 +1,8 @@
 import { Question } from "../models/Question";
 import { Session } from "../models/Session";
+import { generateAIResponse } from "../utils/aiHelper";
 import { AppLogger } from "../utils/logger";
+import { addMoreQuestionPrompt } from "../utils/prompts";
 
 
 export const togglePinQuestion = async (req: any, res: any) => {
@@ -50,44 +52,61 @@ export const updateQuestionNote = async (req: any, res: any) => {
     }
 };
 
-export const addQuestionToSession = async (req: any, res: any) => {
+export const generateMoreQuestions = async (req: any, res: any) => {
     try {
-        AppLogger.info("Entering Add question to session controller");
+        AppLogger.info("Entering Generate more Questions controller");
+        const sessionId = req.params.id;
+        let previouslyGeneratedQuestionStrings = [];
 
-        const { sessionId, questions } = req.body;
-
-        if (!sessionId || !questions || !Array.isArray(questions)) {
-            return res.status(400).json({ message: "Invalid input data" })
+        // Validate input
+        if (!sessionId) {
+            return res.status(400).json({ message: "Session details missing", success: false });
         }
 
-        const session = await Session.findById(sessionId);
+        const sessionData: any = await Session.findById(
+            sessionId
+        ).populate({ path: "questions" }).exec()
 
-        if (!session) {
-            return res.status(404).json({ message: "Session not found" })
+        if (sessionData && sessionData.questions.length > 0) {
+            previouslyGeneratedQuestionStrings = sessionData.questions.map((q: any) => q.question);
         }
 
-        const questionDocs = await Promise.all(
-            questions.map(async (q: any) => {
-                const question = await Question.create({
-                    session: session._id,
-                    question: q.question,
-                    answer: q.answer
-                });
-                return question._id;
-            })
-        )
+        const prompt = addMoreQuestionPrompt(
+            sessionData.role,
+            sessionData.experience,
+            sessionData.focusTopics,
+            3,
+            previouslyGeneratedQuestionStrings
+        );
 
-        session.questions.push(...questionDocs.map((q) => q._id));
-        await session.save()
+        const aiData = await generateAIResponse(prompt);
 
-        res.status(201).json({
-            success: true, questionDocs
-        });
+        if (!aiData || !Array.isArray(aiData)) {
+            return res.status(500).json({ message: "Failed to generate questions", success: false });
+        }
 
-    }
-    catch (error: any) {
-        AppLogger.error(`Error in Add question to session controller:${error.message}`);
-        console.log(error.message); return res.status(500).json({ message: "Server error", success: false });
+        if (aiData.length > 0) {
+            const questionDocs = await Promise.all(
+                aiData.map(async (q: any) => {
+                    const question = await Question.create({
+                        session: sessionId,
+                        question: q.question,
+                        answer: q.answer,
+                    });
+                    return question._id;
+                })
+            );
+
+            sessionData.questions.push(...questionDocs);
+        }
+
+        await sessionData.save();
+
+        res.status(201).json({ success: true, sessionData });
+
+    } catch (error: any) {
+        AppLogger.error(`Error in Generate more Questions controller:${error.message}`);
+        return res.status(500).json({ message: "Server error", success: false });
     }
 };
 

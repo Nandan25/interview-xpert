@@ -75,9 +75,8 @@ export const deleteSession = async (req: any, res: any) => {
 export const createSession = async (req: any, res: any) => {
     try {
         AppLogger.info("Entering Create session controller");
-
-        const { role, experience, focusTopics, description = "", numberOfQuestions = 20 } = req.body;
-        const userId = req.user._id;
+        const { role, experience, focusTopics, description = "" } = req.body;
+        const userId = req.user.id;
 
         // Validate input
         if (!role || !experience || !focusTopics) {
@@ -85,7 +84,7 @@ export const createSession = async (req: any, res: any) => {
         }
 
         // Step 1: Generate Questions Internally
-        const prompt = questionAnswerPrompt(role, experience, focusTopics, description, numberOfQuestions);
+        const prompt = questionAnswerPrompt(role, experience, focusTopics, 5);
         const aiData = await generateAIResponse(prompt);
 
         if (!aiData || !Array.isArray(aiData)) {
@@ -120,10 +119,13 @@ export const createSession = async (req: any, res: any) => {
         await session.save();
 
         res.status(201).json({ success: true, session });
+
     } catch (error: any) {
         AppLogger.error(`Error in Create session controller:${error.message}`);
         return res.status(500).json({ message: "Server error", success: false });
     }
 };
+
+
 
 
