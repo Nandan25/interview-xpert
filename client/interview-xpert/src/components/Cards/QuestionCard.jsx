@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { LuChevronDown, LuPin, LuPinOff, LuSparkles } from "react-icons/lu";
-import AIResponsePreview from "../../pages/InterviewPrep/components/AIResponsePreview";
+import AIResponsePreview from "../InterviewPrep/AIResponsePreview";
 
 const QuestionCard = ({
   question,
@@ -27,11 +27,11 @@ const QuestionCard = ({
 
   return (
     <div className="bg-white rounded-lg mb-4 overflow-hidden py-4 px-5 shadow-xl shadow-gray-100/70 border border-gray-100/60 group">
-      <div className="flex items-start justify-between cursor-pointer">
-        <h3
-          className="text-md text-gray-800 font-medium md:text-[14px]"
-          onClick={toggleExpand}
-        >
+      <div
+        className="flex items-start justify-between cursor-pointer"
+        onClick={toggleExpand}
+      >
+        <h3 className="text-md text-gray-800 font-medium md:text-[14px]">
           {question}
         </h3>
         <div className="flex items-center justify-end ml-4 relative">
@@ -57,7 +57,7 @@ const QuestionCard = ({
             }}
           >
             <LuSparkles />
-            <span className="hidden md:block">Learn More</span>
+            <span className="hidden md:block">View Explanation</span>
           </button>
           <button
             className="text-gray-400 hover:text-gray-500 cursor-pointer"

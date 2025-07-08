@@ -1,39 +1,60 @@
-export const conceptExplanationPrompt = (question: any) => {
-    return (` You are an AI trained to generate explanations for a given interview question.
+export const conceptExplanationPrompt = (question: string) => {
+    return (`You are an AI trained to explain technical interview questions clearly for beginner developers.
+  
+  Task:
+  - Provide a detailed and beginner-friendly explanation for the following interview question:
+  "${question}"
+  
+  - Include a brief, descriptive title summarizing the concept.
+  - If relevant, add a small code example (in JavaScript, if language isn't specified).
+  - Ensure the explanation is cleanly formatted and easy to understand.
+  - Return the result strictly as a valid JSON object, with the following structure:
+  
+  {
+    "title": "A concise title here",
+    "explanation": "The full explanation here, including code if needed."
+  }
+  
+  Important:
+  - Only return the JSON object.
+  - Do NOT include any additional text, notes, markdown, or explanations outside the JSON.
+  `);
+};
 
-    Task:
-    -Explain the following interview question and its concept in depth as if you're teaching a beginner developer.
-    -Question: "${question}"
-    -After the explanation, provide a short and clear title that summarizes the concept for the article or page header 
-    -If the explanation includes a code example,provide a small code block.
-    -Keep formatting very clean and clear.
-    -Return the result as a valid JSON object in the following format:
+export const questionAnswerPrompt = (
+    role: string,
+    experience: number,
+    focusTopics: string,
+    description: string,
+    numberOfQuestions: number
+) => {
+    return (`You are an AI specialized in generating technical interview questions and beginner-friendly answers.
+  
+  Context:
+  - Role: ${role}
+  - Candidate Experience: ${experience} years
+  - Focus Topics: ${focusTopics}
+  - Description: ${description}
+  
+  Task:
+  - Generate ${numberOfQuestions} interview questions tailored to the role and experience level.
+  - For each question, include a detailed, beginner-friendly answer.
+  - Add a code example where applicable (preferably in JavaScript unless the role suggests otherwise).
+  - Format everything cleanly and clearly.
+  
+  Output Format:
+  Return a valid JSON array structured like this:
+  
+  [
     {
-    "title":"Short title here!",
-    "explanation":"Explanation here."
-    }
-    Important: Do not add any extra text outside the JSON format. only return valid JSON.
-    `)
-}
-
-export const questionAnswerPrompt = (role: any, experience: any, focusTopics: any, description: any, numberOfQuestions: any) => {
-    return (`
-    You are an AI trained to generate technical interview questions and answers.
-
-    Task:
-    -Role: ${role}
-    -Candidate Experience: ${experience} years
-    -Focus Topics: ${focusTopics} 
-    -Write ${numberOfQuestions} interview questions.
-    -For each question,generate a detailed but beginner-friendly answer.
-    -If the answer needs a code example,add a small code block inside.
-    -Keep formatting very clean.
-    -Return a pure JSON array like:
-    [{
-    "question":"Question here!",
-    "answer":"Answer here."
-    },...]
-    Important: Do not add any extra text.Only return valid JSON.
-    
-    `)
-}
+      "question": "First question here",
+      "answer": "Detailed answer here, including code if needed"
+    },
+    ...
+  ]
+  
+  Important:
+  - Only return the JSON array.
+  - Do NOT include any additional commentary or explanation outside the JSON format.
+  `);
+};

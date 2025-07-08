@@ -6,13 +6,13 @@ import { LuCircleAlert, LuArrowLeft } from "react-icons/lu";
 import SpinnerLoader from "../../components/Loader/SpinnerLoader";
 import { toast } from "react-hot-toast";
 import DashboardLayout from "../../components/layouts/DashboardLayout";
-import RoleInfoHeader from "./components/RoleInfoHeader";
+import RoleInfoHeader from "../../components/InterviewPrep/RoleInfoHeader";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATHS } from "../../utils/apiPaths";
 import QuestionCard from "../../components/Cards/QuestionCard";
 import Drawer from "../../components/Drawer";
 import SkeletonLoader from "../../components/Loader/SkeletonLoader";
-import AIResponsePreview from "./components/AIResponsePreview";
+import AIResponsePreview from "../../components/InterviewPrep/AIResponsePreview";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const InterviewPrep = () => {
@@ -123,7 +123,7 @@ const InterviewPrep = () => {
         <div className="bg-white shadow-lg rounded-xl p-6 border border-gray-200">
           <button
             onClick={() => navigate("/dashboard")}
-            className="flex items-center gap-2 text-sm text-orange-600 font-semibold mb-4 hover:underline"
+            className="flex items-center gap-2 text-sm text-orange-600 font-semibold mb-4 hover:underline cursor-pointer"
           >
             <LuArrowLeft className="text-lg" />
             Back to Dashboard

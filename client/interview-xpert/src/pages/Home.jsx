@@ -2,11 +2,8 @@ import React, { useState, useContext } from "react";
 import { APP_FEATURES } from "../utils/data";
 import { useNavigate } from "react-router-dom";
 import { LuSparkles } from "react-icons/lu";
-import Modal from "../components/Modal";
 import { UserContext } from "../context/userContext";
-import { ProfileInfoCard } from "../components/Cards/ProfileInfoCard";
 import { API_PATHS } from "../utils/apiPaths";
-import Navbar from "../components/layouts/Navbar";
 import PagesLayout from "../components/layouts/PagesLayout";
 
 export const LandingPage = () => {

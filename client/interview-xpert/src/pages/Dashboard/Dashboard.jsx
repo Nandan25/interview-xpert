@@ -27,13 +27,6 @@ const Dashboard = () => {
     try {
       const response = await axiosInstance.get(API_PATHS.SESSION.GET_ALL);
       setSessions(response.data.sessions);
-      // const session = response.data.sessions; // single session object
-
-      // const multipleSessions = Array.from({ length: 20 }, () => ({
-      //   ...session,
-      // }));
-
-      // setSessions(multipleSessions);
     } catch (error) {
       console.error("Error fetching session data:", error);
     }
