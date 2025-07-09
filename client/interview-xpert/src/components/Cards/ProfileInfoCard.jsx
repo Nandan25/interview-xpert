@@ -15,19 +15,19 @@ export const ProfileInfoCard = () => {
 
   return (
     user && (
-      <div className="flex items-center gap-4 bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+      <div className="flex items-center gap-2 sm:gap-4 bg-white p-3 rounded-xl shadow-sm border border-gray-100 max-w-full">
         <img
           src={user?.picture || ""}
           alt="Profile"
-          className="w-11 h-11 rounded-full object-cover border border-gray-200"
+          className="w-10 h-10 sm:w-11 sm:h-11 rounded-full object-cover border border-gray-200"
         />
-        <div className="flex flex-col">
-          <span className="text-base font-semibold text-gray-800">
+        <div className="flex flex-col leading-tight min-w-0">
+          <span className="text-xs sm:text-sm md:text-base font-semibold text-gray-800 truncate">
             {user?.name || ""}
           </span>
           <button
             onClick={handleLogout}
-            className="text-sm text-amber-600 font-medium hover:underline hover:text-amber-700 transition"
+            className="text-xs sm:text-sm text-amber-600 font-medium hover:underline hover:text-amber-700 transition"
           >
             Logout
           </button>
