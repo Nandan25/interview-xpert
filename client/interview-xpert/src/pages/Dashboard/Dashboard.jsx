@@ -11,15 +11,17 @@ import Modal from "../../components/Modal";
 import { CreateSessionForm } from "./CreateSessionForm";
 import { toast } from "react-hot-toast";
 import DeleteAlertContent from "../../components/DeleteAlertContent";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import SpinnerLoader from "../../components/Loader/SpinnerLoader";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const [openCreateModal, setOpenCreateModal] = useState(false);
 
   const { data: sessions, isPending } = useQuery({
+    queryKey: ["sessions"],
     queryFn: async () => {
       const response = await axiosInstance.get(API_PATHS.SESSION.GET_ALL);
 
@@ -31,6 +33,18 @@ const Dashboard = () => {
   const [openDeleteAlert, setOpenDeleteAlert] = useState({
     open: false,
     data: null,
+  });
+
+  const deleteSessionMutation = useMutation({
+    mutationFn: async (sessionId) => {
+      await axiosInstance.delete(`${API_PATHS.SESSION.DELETE}${sessionId}`);
+      return sessionId;
+    },
+    onSuccess: (deletedSessionId) => {
+      queryClient.setQueryData(["sessions"], (oldSessions) =>
+        oldSessions?.filter((session) => session._id !== deletedSessionId)
+      );
+    },
   });
 
   const deleteSession = async (data) => {
@@ -117,7 +131,7 @@ const Dashboard = () => {
           <DeleteAlertContent
             content="Are you sure you want to delete this session?"
             onDelete={() => {
-              deleteSession(openDeleteAlert.data);
+              deleteSessionMutation.mutate(openDeleteAlert.data._id);
               setOpenDeleteAlert({ open: false, data: null });
             }}
             onCancel={() => setOpenDeleteAlert({ open: false, data: null })}
