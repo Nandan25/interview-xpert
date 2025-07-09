@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import { User } from "../models/User";
-import { error } from "console";
 import { AppLogger } from "../utils/logger";
 
 // Middleware to protect routes
