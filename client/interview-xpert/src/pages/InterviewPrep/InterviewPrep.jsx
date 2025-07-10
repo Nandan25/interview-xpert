@@ -128,7 +128,9 @@ const InterviewPrep = () => {
     },
     onError: (error) => {
       console.error("Error generating more questions:", error);
-      toast.error("Error generating more questions. Please try again.");
+      if (error.status === 400) {
+        toast.error(error.response.data.message);
+      } else toast.error("Error generating more questions. Please try again.");
     },
   });
 

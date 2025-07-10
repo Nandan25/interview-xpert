@@ -68,7 +68,14 @@ export const generateMoreQuestions = async (req: any, res: any) => {
         ).populate({ path: "questions" }).exec()
 
         if (sessionData && sessionData.questions.length > 0) {
-            previouslyGeneratedQuestionStrings = sessionData.questions.map((q: any) => q.question);
+            if (sessionData.questions.length < 30) {
+                previouslyGeneratedQuestionStrings = sessionData.questions.map((q: any) => q.question);
+            } else {
+
+                return res.status(400).json({
+                    message: "You cannot generate more than 30 questions per session.", success: false
+                });
+            }
         }
 
         const prompt = addMoreQuestionPrompt(
